@@ -7,6 +7,10 @@
 #include "ui_mainwindow.h"
 #include "dirichlet_problem_solver.h"
 
+using matrix = Dirichlet_problem_solver::matrix;
+using vec = Dirichlet_problem_solver::vec;
+
+
 QString approx(double num)
 {
     std::ostringstream streamObj;
@@ -98,16 +102,22 @@ void MainWindow::solve() {
 
     double curr_accuracy = 0;
     double max_accuracy = 0;
+    auto solution_sub = new matrix(m_y_partitions + 1, vec(n_x_partitions + 1, 0.0));
 
     for (int j = 0; j <= m_y_partitions; j++)
     {
         for (int i = 0; i <= n_x_partitions; i++)
         {
             curr_accuracy = abs((*solution_double)[2 * j][2 * i] - (*solution)[j][i]);
+            (*solution_sub)[j][i] = curr_accuracy;
+
             if (curr_accuracy > max_accuracy)
                 max_accuracy = curr_accuracy;
         }
     }
+
+    clear_table(ui->out_table_3_main);
+    fill_table(ui->out_table_3_main, m_y_partitions, n_x_partitions, solution_sub);
 
     ui->test_accurac_lbl_main->setText(approx(max_accuracy));
     ui->step_num_lbl_main->setText(approx(solver.total_iters));
