@@ -149,4 +149,16 @@ void MainWindow::solve_test_task() {
 
     clear_table(ui->out_table_2_test);
     fill_table(ui->out_table_2_test, m_y_partitions, n_x_partitions, solver.analytic_solution);
+
+    auto solution_sub = new matrix(m_y_partitions + 1, vec(n_x_partitions + 1, 0.0));
+    for (int j = 0; j <= m_y_partitions; j++)
+    {
+        for (int i = 0; i <= n_x_partitions; i++)
+        {
+            (*solution_sub)[j][i] = abs((*solver.analytic_solution)[j][i] - (*solution)[j][i]);;
+        }
+    }
+
+    clear_table(ui->out_table_3_main);
+    fill_table(ui->out_table_3_test, m_y_partitions, n_x_partitions, solution_sub);
 }
