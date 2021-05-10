@@ -191,7 +191,7 @@ void MainWindow::solve_test_task() {
         }
     }
 
-    clear_table(ui->out_table_3_main);
+    clear_table(ui->out_table_3_test);
     fill_table(ui->out_table_3_test, m_y_partitions, n_x_partitions, solution_sub);
 
     std::cout << "------------------------------------------------" << std::endl
