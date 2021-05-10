@@ -83,7 +83,7 @@ void Dirichlet_problem_solver::simple_iteration_method() {
     double h2 = 1 / (x_step * x_step);
     double k2 = 1 / (y_step * y_step);
     double a2 = -2 * (h2 + k2);
-    uint iter = 0;
+    int iter = 0;
 
     double v_old, v_new;
 
