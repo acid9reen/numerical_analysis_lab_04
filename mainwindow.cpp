@@ -19,6 +19,14 @@ QString approx(double num)
     return QString::fromStdString(streamObj.str());
 }
 
+QString int_to_QString(int num)
+{
+    std::ostringstream streamObj;
+    streamObj << std::scientific << num;
+
+    return QString::fromStdString(streamObj.str());
+}
+
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent)
         , ui(new Ui::MainWindow)
@@ -61,6 +69,8 @@ void MainWindow::fill_table(QTableWidget *table,
     {
         for (int i = 0; i <= n_x_partitions; i++)
         {
+            table->setHorizontalHeaderItem(i, new QTableWidgetItem(int_to_QString(i)));
+            table->setVerticalHeaderItem(j, new QTableWidgetItem(int_to_QString(m_y_partitions - j)));
             table->setItem(row, column, new QTableWidgetItem(approx((*matrix)[j][i])));
             column++;
             column %= (n_x_partitions + 1);
@@ -104,6 +114,8 @@ void MainWindow::solve() {
     double max_accuracy = 0;
     auto solution_sub = new matrix(m_y_partitions + 1, vec(n_x_partitions + 1, 0.0));
 
+    double max_i {0};
+    double max_j {0};
     for (int j = 0; j <= m_y_partitions; j++)
     {
         for (int i = 0; i <= n_x_partitions; i++)
@@ -112,7 +124,11 @@ void MainWindow::solve() {
             (*solution_sub)[j][i] = curr_accuracy;
 
             if (curr_accuracy > max_accuracy)
+            {
                 max_accuracy = curr_accuracy;
+                max_i = i;
+                max_j = j;
+            }
         }
     }
 
@@ -122,6 +138,11 @@ void MainWindow::solve() {
     ui->test_accurac_lbl_main->setText(approx(max_accuracy));
     ui->step_num_lbl_main->setText(approx(solver.total_iters));
     ui->accuracy_lbl_main->setText(approx(solver.eps_max));
+
+    std::cout << "------------------------------------------------" << std::endl
+              << "Max sub at (" << max_i << ", " << max_j << ")" << std::endl
+              << "Discrepancy: " << solver.discrepancy_of_solution() << std::endl
+              << "------------------------------------------------" << std::endl;
 
 }
 
@@ -150,15 +171,32 @@ void MainWindow::solve_test_task() {
     clear_table(ui->out_table_2_test);
     fill_table(ui->out_table_2_test, m_y_partitions, n_x_partitions, solver.analytic_solution);
 
+    double max_i {0};
+    double max_j {0};
+    double max_sub {0};
     auto solution_sub = new matrix(m_y_partitions + 1, vec(n_x_partitions + 1, 0.0));
     for (int j = 0; j <= m_y_partitions; j++)
     {
         for (int i = 0; i <= n_x_partitions; i++)
         {
-            (*solution_sub)[j][i] = abs((*solver.analytic_solution)[j][i] - (*solution)[j][i]);;
+            double sub = abs((*solver.analytic_solution)[j][i] - (*solution)[j][i]);
+            (*solution_sub)[j][i] = sub;
+
+            if (sub > max_sub)
+            {
+                max_sub = sub;
+                max_i = i;
+                max_j = j;
+            }
         }
     }
 
     clear_table(ui->out_table_3_main);
     fill_table(ui->out_table_3_test, m_y_partitions, n_x_partitions, solution_sub);
+
+    std::cout << "------------------------------------------------" << std::endl
+              << "Max sub at (" << max_i << ", " << max_j << ")" << std::endl
+              << "Discrepancy: " << solver.discrepancy_of_solution() << std::endl
+              << "------------------------------------------------" << std::endl;
+
 }
