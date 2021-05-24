@@ -94,8 +94,8 @@ void Dirichlet_problem_solver::simple_iteration_method() {
         iter++;
         eps_max = 0;
         
-        for (int j = 1; j < m_y_partitions; j++)
-            for (int i = 1; i < n_x_partitions; i++)
+        for (int j = 0; j <= m_y_partitions; j++)
+            for (int i = 0; i <= n_x_partitions; i++)
                 (*solution_old)[j][i] = (*solution)[j][i];
 
         for (int j = 1; j < m_y_partitions; j++)
