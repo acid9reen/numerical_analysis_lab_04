@@ -6,6 +6,8 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
+constexpr auto M_PI = 3.14159265358979323846264338327950288;
+
 Dirichlet_problem_solver::Dirichlet_problem_solver(int m_y_partitions_,
                                                    int n_x_partitions_,
                                                    int max_iters_, double x_left_bound_,
@@ -83,14 +85,18 @@ void Dirichlet_problem_solver::simple_iteration_method() {
     double h2 = 1 / (x_step * x_step);
     double k2 = 1 / (y_step * y_step);
     double a2 = -2 * (h2 + k2);
-    uint iter = 0;
-
+    int iter = 0;
+    auto solution_old = new matrix(m_y_partitions + 1, vec(n_x_partitions + 1, 0.0));
     double v_old, v_new;
 
     while (true)
     {
         iter++;
         eps_max = 0;
+        
+        for (int j = 0; j <= m_y_partitions; j++)
+            for (int i = 0; i <= n_x_partitions; i++)
+                (*solution_old)[j][i] = (*solution)[j][i];
 
         for (int j = 1; j < m_y_partitions; j++)
             for (int i = 1; i < n_x_partitions; i++)
@@ -99,14 +105,14 @@ void Dirichlet_problem_solver::simple_iteration_method() {
                 Xi = x_left_bound + i * x_step;
                 Yj = y_left_bound + j * y_step;
 
-                v_old = (*solution)[j][i];
+                v_old = (*solution_old)[j][i];
+
                 v_new = v_old + tau * (
-                        k2 * ((*solution)[j - 1][i] + (*solution)[j + 1][i])
-                        + h2 * ((*solution)[j][i - 1] + (*solution)[j][i + 1])
+                        h2 * ((*solution_old)[j - 1][i] + (*solution_old)[j + 1][i])
+                        + k2 * ((*solution_old)[j][i - 1] + (*solution_old)[j][i + 1])
                         + a2 * v_old
                         + f(Xi, Yj)
                         );
-
 
                 eps_cur = std::abs(v_old - v_new);
 
