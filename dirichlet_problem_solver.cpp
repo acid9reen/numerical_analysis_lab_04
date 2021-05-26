@@ -108,8 +108,8 @@ void Dirichlet_problem_solver::simple_iteration_method() {
                 v_old = (*solution_old)[j][i];
 
                 v_new = v_old + tau * (
-                        h2 * ((*solution_old)[j - 1][i] + (*solution_old)[j + 1][i])
-                        + k2 * ((*solution_old)[j][i - 1] + (*solution_old)[j][i + 1])
+                        k2 * ((*solution_old)[j - 1][i] + (*solution_old)[j + 1][i])
+                        + h2 * ((*solution_old)[j][i - 1] + (*solution_old)[j][i + 1])
                         + a2 * v_old
                         + f(Xi, Yj)
                         );
@@ -136,7 +136,9 @@ Dirichlet_problem_solver::matrix* Dirichlet_problem_solver::fill_right_side()
     for (int j = 1; j < m_y_partitions; j++)
         for (int i = 1; i < n_x_partitions; i++)
         {
-            double Xi, Yj, sum = 0;
+            double Xi, Yj;
+            double sum{ 0 };
+
             Xi = x_left_bound + i * x_step;
             Yj = y_left_bound + j * y_step;
 
@@ -160,46 +162,24 @@ double Dirichlet_problem_solver::discrepancy_of_solution()
 {
     double rs = 0;
 
-    double h2 = 1 / (x_step * x_step);
-    double k2 = 1 / (y_step * y_step);
+    double h2 = 1 / (y_step * y_step);
+    double k2 = 1 / (x_step * x_step);
     double a2 = -2 * (h2 + k2);
 
     auto F = fill_right_side();
 
-    for (int j = 1; j < m_y_partitions; j++)
+    for (size_t j = 1; j < m_y_partitions; j++)
     {
-        for (int i = 1; i < n_x_partitions; i++)
+        for (size_t i = 1; i < n_x_partitions; i++)
         {
             double r {0};
-            double mult {1};
+            double mult {0};
 
-            if (j != 1 && j != m_y_partitions - 1)
-            {
-                if (i != 1 && i != n_x_partitions - 1)
-                    mult = k2 * (*solution)[j][i - 1] + h2 * (*solution)[j - 1][i] + a2 * (*solution)[j][i] + h2 * (*solution)[j + 1][i] + k2 * (*solution)[j][i + 1];
-                else if (i == 1)
-                    mult = h2 * (*solution)[j - 1][i] + a2 * (*solution)[j][i] + h2 * (*solution)[j + 1][i] + k2 * (*solution)[j][i + 1];
-                else if (i == n_x_partitions - 1)
-                    mult = k2 * (*solution)[j][i - 1] + h2 * (*solution)[j - 1][i] + a2 * (*solution)[j][i] + h2 * (*solution)[j + 1][i];
-            }
-            else if (j == 1)
-            {
-                if (i == 1)
-                    mult = a2 * (*solution)[j][i] + h2 * (*solution)[j + 1][i] + k2 * (*solution)[j][i + 1];
-                else if (i != n_x_partitions - 1)
-                    mult = k2 * (*solution)[j][i - 1] + a2 * (*solution)[j][i] + h2 * (*solution)[j + 1][i] + k2 * (*solution)[j][i + 1];
-                else if (i == n_x_partitions - 1)
-                    mult = k2 * (*solution)[j][i - 1] + a2 * (*solution)[j][i] + h2 * (*solution)[j + 1][i];
-            }
-            else if (j == m_y_partitions - 1)
-            {
-                if (i == 1)
-                    mult = h2 * (*solution)[j - 1][i] + a2 * (*solution)[j][i] + k2 * (*solution)[j][i + 1];
-                else if (i != n_x_partitions - 1)
-                    mult = k2 * (*solution)[j][i - 1] + h2 * (*solution)[j - 1][i] + a2 * (*solution)[j][i] + k2 * (*solution)[j][i + 1];
-                else if (i == n_x_partitions - 1)
-                    mult = k2 * (*solution)[j][i - 1] + h2 * (*solution)[j - 1][i] + a2 * (*solution)[j][i];
-            }
+            mult = k2 * (*solution)[j][i - 1] * static_cast<int>(i != 1)
+                 + h2 * (*solution)[j - 1][i] * static_cast<int>(j != 1)
+                 + a2 * (*solution)[j][i]
+                 + h2 * (*solution)[j + 1][i] * static_cast<int>(j != m_y_partitions - 1)
+                 + k2 * (*solution)[j][i + 1] * static_cast<int>(i != n_x_partitions - 1);
 
             r = fabs(mult - (*F)[j][i]);
             rs += r * r;
@@ -213,7 +193,6 @@ Dirichlet_problem_solver::matrix* Dirichlet_problem_solver::solve() {
     fill_start_solution();
     calculate_tau();
     simple_iteration_method();
-
 
     return solution;
 }
