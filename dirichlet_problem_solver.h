@@ -6,10 +6,11 @@ class Dirichlet_problem_solver
 public:
     using vec = std::vector<double>;
     using matrix = std::vector<vec>;
+    double tau;
 
 protected:
     int m_y_partitions, n_x_partitions, max_iters;
-    double eps, tau;
+    double eps;
     double x_step, y_step;
     double x_left_bound;
     double x_right_bound;
