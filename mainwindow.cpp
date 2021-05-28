@@ -143,7 +143,13 @@ void MainWindow::solve() {
               << ">>> Max sub at (" << max_i << ", " << max_j << ")" << std::endl
               << ">>> Discrepancy: " << solver.discrepancy_of_solution() << std::endl
               << ">>> Tau: " << solver.tau << std::endl
+
+              // Report output only!
+              << ">>>" << std::endl
               << ">>> Tau_2: " << solver_double.tau << std::endl
+              << ">>> Eps_max_2: " << solver_double.eps_max << std::endl
+              << ">>> Total iters: " << solver_double.total_iters << std::endl
+              << ">>> Discrepancy_2: " << solver_double.discrepancy_of_solution() << std::endl
               << "------------------------------------------------" << std::endl;
 
 }
