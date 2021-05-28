@@ -11,6 +11,9 @@ CTestTestfile.cmake
 _deps
 *debug
 
+# Build directory
+*out*
+
 # IDEs
 .idea
 .vs
