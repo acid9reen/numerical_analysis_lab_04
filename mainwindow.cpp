@@ -140,8 +140,16 @@ void MainWindow::solve() {
     ui->accuracy_lbl_main->setText(approx(solver.eps_max));
 
     std::cout << "------------------------------------------------" << std::endl
-              << "Max sub at (" << max_i << ", " << max_j << ")" << std::endl
-              << "Discrepancy: " << solver.discrepancy_of_solution() << std::endl
+              << ">>> Max sub at (" << max_i << ", " << max_j << ")" << std::endl
+              << ">>> Discrepancy: " << solver.discrepancy_of_solution() << std::endl
+              << ">>> Tau: " << solver.tau << std::endl
+
+              // Report output only!
+              << ">>>" << std::endl
+              << ">>> Tau_2: " << solver_double.tau << std::endl
+              << ">>> Eps_max_2: " << solver_double.eps_max << std::endl
+              << ">>> Total iters: " << solver_double.total_iters << std::endl
+              << ">>> Discrepancy_2: " << solver_double.discrepancy_of_solution() << std::endl
               << "------------------------------------------------" << std::endl;
 
 }
@@ -195,8 +203,9 @@ void MainWindow::solve_test_task() {
     fill_table(ui->out_table_3_test, m_y_partitions, n_x_partitions, solution_sub);
 
     std::cout << "------------------------------------------------" << std::endl
-              << "Max sub at (" << max_i << ", " << max_j << ")" << std::endl
-              << "Discrepancy: " << solver.discrepancy_of_solution() << std::endl
+              << ">>> Max sub at (" << max_i << ", " << max_j << ")" << std::endl
+              << ">>> Discrepancy: " << solver.discrepancy_of_solution() << std::endl
+              << ">>> Tau: " << solver.tau << std::endl
               << "------------------------------------------------" << std::endl;
 
 }

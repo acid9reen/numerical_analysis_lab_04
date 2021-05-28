@@ -91,6 +91,9 @@ void Dirichlet_problem_solver::simple_iteration_method() {
 
     while (true)
     {
+        if (max_iters == 0)
+            break;
+
         iter++;
         eps_max = 0;
         
