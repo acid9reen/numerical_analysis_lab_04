@@ -56,27 +56,33 @@ void MainWindow::fill_table(QTableWidget *table,
                 int m_y_partitions,
                 int n_x_partitions,
                 Dirichlet_problem_solver::matrix* matrix)
-{
-    for (int j = 0; j < m_y_partitions + 1; ++j)
+{   
+    int max_out = 10;
+    int max_out_x = n_x_partitions;
+    int max_out_y = m_y_partitions;
+    if (max_out_x > max_out || max_out_y > max_out) {
+        max_out_x = max_out;
+        max_out_y = max_out;
+    }
+        
+
+    for (int j = 0; j < max_out_y + 1; j++)
         table->insertRow(j);
 
-    for (int i = 0; i < n_x_partitions + 1; i++)
+    for (int i = 0; i < max_out_x + 1; i++)
         table->insertColumn(i);
 
-    int row = 0;
     int column = 0;
-    for (int j = m_y_partitions; j >= 0; j--)
+    for (int j = 0; j <= max_out_y; j++)
     {
-        for (int i = 0; i <= n_x_partitions; i++)
+        for (int i = 0; i <= max_out_x; i++)
         {
             table->setHorizontalHeaderItem(i, new QTableWidgetItem(int_to_QString(i)));
-            table->setVerticalHeaderItem(j, new QTableWidgetItem(int_to_QString(m_y_partitions - j)));
-            table->setItem(row, column, new QTableWidgetItem(approx((*matrix)[j][i])));
+            table->setVerticalHeaderItem(j, new QTableWidgetItem(int_to_QString(j)));
+            table->setItem(j, column, new QTableWidgetItem(approx((*matrix)[j][i])));
             column++;
-            column %= (n_x_partitions + 1);
+            column %= (max_out_x + 1);
         }
-
-        row++;
     }
 }
 
