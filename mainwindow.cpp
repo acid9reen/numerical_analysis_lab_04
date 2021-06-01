@@ -60,7 +60,7 @@ void MainWindow::fill_table(QTableWidget *table,
     int max_out = 10;
     int max_out_x = n_x_partitions;
     int max_out_y = m_y_partitions;
-    if (max_out_x > max_out || max_out_y > max_out) {
+    if (max_out_x > max_out && max_out_y > max_out) {
         max_out_x = max_out;
         max_out_y = max_out;
     }

@@ -2,11 +2,9 @@
 
 #include <cstdio>
 #include <iostream>
-
-#define _USE_MATH_DEFINES
 #include <cmath>
 
-constexpr auto M_PI = 3.14159265358979323846264338327950288;
+constexpr double M_PI = 3.14159265358979323846264338327950288;
 
 Dirichlet_problem_solver::Dirichlet_problem_solver(int m_y_partitions_,
                                                    int n_x_partitions_,
@@ -136,14 +134,15 @@ Dirichlet_problem_solver::matrix* Dirichlet_problem_solver::fill_right_side()
 {
     auto F = new matrix(m_y_partitions + 1, vec(n_x_partitions + 1, 0.0));
 
+    double Xi{ x_left_bound }, Yj{ y_left_bound };
+    double sum{ 0 };
+
     for (int j = 1; j < m_y_partitions; j++)
         for (int i = 1; i < n_x_partitions; i++)
         {
-            double Xi, Yj;
-            double sum{ 0 };
-
             Xi = x_left_bound + i * x_step;
             Yj = y_left_bound + j * y_step;
+            sum = 0;
 
             if (j == 1)
                 sum += (1 / (y_step * y_step)) * M3(Xi);
@@ -171,13 +170,13 @@ double Dirichlet_problem_solver::discrepancy_of_solution()
 
     auto F = fill_right_side();
 
+    double r{ 0 };
+    double mult{ 0 };
+
     for (size_t j = 1; j < m_y_partitions; j++)
     {
         for (size_t i = 1; i < n_x_partitions; i++)
         {
-            double r {0};
-            double mult {0};
-
             mult = k2 * (*solution)[j][i - 1] * static_cast<int>(i != 1)
                  + h2 * (*solution)[j - 1][i] * static_cast<int>(j != 1)
                  + a2 * (*solution)[j][i]
