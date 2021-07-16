@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.18)
 project(num_an_lab_04)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -6,13 +6,12 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(QT_VERSION 5)
+set(QT_VERSION 6)
 set(REQUIRED_LIBS Core Gui Widgets)
-set(REQUIRED_LIBS_QUALIFIED Qt5::Core Qt5::Gui Qt5::Widgets)
+set(REQUIRED_LIBS_QUALIFIED Qt6::Core Qt6::Gui Qt6::Widgets)
 
 add_executable(${PROJECT_NAME} mainwindow.h mainwindow.cpp main.cpp dirichlet_problem_solver.cpp dirichlet_problem_solver.h)
 
-list(APPEND CMAKE_PREFIX_PATH "/opt/Qt/5.15.2/gcc_64")
 list(APPEND CMAKE_PREFIX_PATH "D:\\sdks\\Qt\\5.15.2\\msvc2019_64")
 
 if (NOT CMAKE_PREFIX_PATH)

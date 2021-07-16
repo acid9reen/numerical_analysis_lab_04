@@ -6,7 +6,6 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-constexpr auto M_PI = 3.14159265358979323846264338327950288;
 
 Dirichlet_problem_solver::Dirichlet_problem_solver(int m_y_partitions_,
                                                    int n_x_partitions_,
